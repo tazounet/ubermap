@@ -22,6 +22,6 @@ def create_instance(c_instance):
     u""" Creates and returns the Push script """
 
     from Ubermap import UbermapDevicesPatches
-    UbermapDevicesPatches.apply_ubermap_patches()
+    UbermapDevicesPatches.apply_ubermap_patches(True)
     
     return Push(c_instance=c_instance)
