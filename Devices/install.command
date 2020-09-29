@@ -67,9 +67,9 @@ echo "$(tput sgr0) --> Installing into ${LIVE_MIDI_REMOTE_PATH} ... "
 
 cd ${0%/*}
 
-cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/__init__.py" "$LIVE_MIDI_REMOTE_PATH/Push/__init__.py.ubermap-backup"
+cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc.ubermap-backup"
 check_error
-cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.py" "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc.ubermap-backup"
+cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc" "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc.ubermap-backup"
 check_error
 
 # Copy
