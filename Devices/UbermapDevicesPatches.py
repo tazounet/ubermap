@@ -40,9 +40,10 @@ def apply_banking_util_patches():
 
     def device_bank_names(device, bank_size = 8, definitions = None):
         ubermap_banks = ubermap.get_custom_device_banks(device)
+
         if ubermap_banks:
             return ubermap_banks
-        ubermap.dump_device(device)
+
 
         return device_bank_names_orig(device, bank_size, definitions)
 
