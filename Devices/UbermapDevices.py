@@ -2,6 +2,7 @@ import os.path
 from configobj import ConfigObj
 from functools import partial
 import hashlib
+import re
 from Ubermap.UbermapLibs import log, log_call, config
 
 class UbermapDevices:
@@ -12,6 +13,8 @@ class UbermapDevices:
     SECTION_CONFIG  = 'Config'
 
     device_config_cache = {}
+
+    regex = re.compile(r"^\d+\_", re.IGNORECASE)
 
     def __init__(self):
         self.cfg = config.load('devices')
@@ -32,16 +35,10 @@ class UbermapDevices:
         if not device:
             return
 
-        folder = self.get_device_filename(device)
-
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-
-        file_path = folder + os.path.sep + "unmapped.txt"
+        file_path = self.get_device_filename(device) + "_unmapped.txt"
         unmapped_parameters = sorted([i.original_name for i in device.parameters[1:] if i.original_name not in used_parameters])
-        log.info('dumping device: ' + self.get_device_name(device))
-        log.info("used parameters count: " + str(len(used_parameters)))
-        log.info("unmapped parameters count: " + str(len(unmapped_parameters)))
+
+        log.debug('dumping device: ' + self.get_device_name(device) + "; used parameters count: " + str(len(used_parameters)) + "; unmapped parameters count: " + str(len(unmapped_parameters)))
 
         if len(unmapped_parameters) > 0:
             with open(file_path, 'w+') as f:
@@ -59,13 +56,12 @@ class UbermapDevices:
         if local_device_name is None or len(local_device_name) == 0:
             return False
 
-        cfg = config.load("banks", subdir='Devices', subdir2=local_device_name)
+        cfg = config.load_device_config(local_device_name)
 
         if not cfg:
             return False
 
         return cfg if cfg.get('Config', 'Ignore') == 'False' else False
-
 
     def get_custom_device_banks(self, device):
         device_config = self.get_device_config(device)
@@ -73,10 +69,12 @@ class UbermapDevices:
             self.dump_device(device)
             return False
 
-        banks = device_config.get(self.SECTION_BANKS).keys()
-        used_params = set([p for bank in banks if device_config.get(self.SECTION_BANKS).get(bank) is not None for p in device_config.get(self.SECTION_BANKS).get(bank)])
+        banks = device_config.get(self.SECTION_BANKS)
+        bank_keys = device_config.get(self.SECTION_BANKS).keys()
+        used_params = set([re.sub(self.regex, '', p) for bank in bank_keys if banks.get(bank) is not None for p in banks.get(bank)])
+        log.debug("used params: " + ", ".join(sorted(used_params)))
         self.dump_device(device, used_params)
-        return banks
+        return bank_keys
 
     def get_custom_device_params(self, device, bank_name = None):
         if not bank_name:
@@ -113,9 +111,16 @@ class UbermapDevices:
         def get_parameter_by_name(device, nameMapping):
             count = 0
             for i in device.parameters:
-                if (nameMapping[0] == str(count) + "_" + i.original_name) or (nameMapping[0] == i.original_name):
-                    log.debug("got " + nameMapping[1] + " for " + nameMapping[0])
-                    i.custom_name = nameMapping[1]
+                original_name = nameMapping[0]
+                if (original_name == i.original_name) or (original_name == str(count) + "_" + i.original_name) or re.match("^\d+\_\w+$" + i.original_name, original_name) :
+                    if not nameMapping[1]:
+                        custom_name = original_name
+                    elif nameMapping[1] == "*":
+                        custom_name = " ".join(re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', original_name)).split())
+                    else:
+                        custom_name = nameMapping[1]
+                    log.info("got " + custom_name+ " for " + original_name)
+                    i.custom_name = custom_name
 
                     [i.custom_parameter_values, i.custom_parameter_start_points] = get_custom_parameter_values(nameMapping[0])
 

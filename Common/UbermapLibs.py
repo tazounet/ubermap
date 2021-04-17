@@ -45,20 +45,18 @@ class UbermapConfig:
 
     _config_cache = {}
 
-    def get_config_path(self, name, subdir = None):
-        name = name + ".cfg"
-        if(subdir):
-            path = os.path.join(UBERMAP_ROOT, subdir, name)
+    def get_path(self, name, subdir1 = None):
+        if subdir1:
+            path = os.path.join(UBERMAP_ROOT, subdir1, name)
         else:
             path = os.path.join(UBERMAP_ROOT, name)
 
         return path
 
     def load(self, name, subdir = None, log_enabled = True):
-        path = self.get_config_path(name, subdir)
-        if log_enabled:
-            log.debug('load config name: ' + name + ', path: ' + path + ', subdir: ' + str(subdir))
-        if(not os.path.isfile(path)):
+        path = self.get_path(name, subdir1=subdir) + ".cfg"
+
+        if not os.path.isfile(path):
             if log_enabled:
                 log.info('config not found: ' + path)
             return False
@@ -86,6 +84,19 @@ class UbermapConfig:
                 return False
 
         return UbermapConfigProxy(self, name, subdir, log_enabled)
+
+    def load_device_config(self, device_name):
+        devices_folder = config.get_path('Devices')
+        device_config_files = [f for root, dirs, files in os.walk(devices_folder) for f in files if f.startswith(device_name) and f.endswith(".cfg")]
+        device_config_files.sort(key=lambda f: os.path.getmtime(os.path.join(devices_folder, f)))
+        device_config_files.reverse()
+
+        for file in device_config_files:
+            no_ext = file.replace(".cfg", "")
+            if no_ext.startswith(device_name):
+                return self.load(no_ext, 'Devices');
+
+        return None
 
     def get(self, name, key, subdir, log_enabled):
         self.load(name, subdir, log_enabled)
