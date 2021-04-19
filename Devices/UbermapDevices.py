@@ -1,5 +1,5 @@
 import os.path
-from configobj import ConfigObj
+from Ubermap.configobj import ConfigObj
 from functools import partial
 import hashlib
 import re

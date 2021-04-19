@@ -106,10 +106,10 @@ def apply_device_component_patches(is_v1):
 
     def _get_provided_parameters(self):
         ubermap_params = ubermap.get_custom_device_params(self._decorated_device)
-
         if ubermap_params:
-            param_bank = ubermap_params[self._bank.index]
-            param_info = map(lambda parameter: _get_parameter_info(self, parameter), param_bank)
+            ubermap_params_list = list(ubermap_params)
+            param_bank = ubermap_params_list[self._bank.index]
+            param_info = list(map(lambda parameter: _get_parameter_info(self, parameter), param_bank))
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)

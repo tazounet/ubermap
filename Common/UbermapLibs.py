@@ -29,18 +29,20 @@ class UbermapLogger:
         self._get_log_file(name).flush()
 
     def debug(self, msg, name = None):
-        if self.cfg.get('Log', 'Debug') == 'True':
-            self.write('DEBUG: ' + msg, name)
+        pass
+        # if self.cfg.get('Log', 'Debug') == 'True':
+        #     self.write('DEBUG: ' + msg, name)
 
     def info(self, msg, name = None):
-        if self.cfg.get('Log', 'Info') == 'True':
-            self.write('INFO: ' + msg, name)
+        pass
+        # if self.cfg.get('Log', 'Info') == 'True':
+        #     self.write('INFO: ' + msg, name)
 
     def error(self, msg, name = None):
         self.write('ERROR: ' + msg, name)
 
 
-from configobj import ConfigObj
+from Ubermap.configobj import ConfigObj
 class UbermapConfig:
 
     _config_cache = {}
@@ -81,7 +83,8 @@ class UbermapConfig:
             except Exception as e:
                 if log_enabled:
                     log.error('error parsing config: ' + path + " " + str(e))
-                return False
+                raise e
+                # return False
 
         return UbermapConfigProxy(self, name, subdir, log_enabled)
 
