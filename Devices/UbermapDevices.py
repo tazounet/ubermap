@@ -1,5 +1,5 @@
 import os.path
-from configobj import ConfigObj
+from Ubermap.configobj import ConfigObj
 from functools import partial
 import hashlib
 import re
@@ -24,7 +24,7 @@ class UbermapDevices:
         if not device:
             return None
 
-        name = device.class_display_name or device.class_name
+        name = device.class_name
         return name
 
     def get_device_filename(self, device):
