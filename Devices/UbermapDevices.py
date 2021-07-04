@@ -24,7 +24,7 @@ class UbermapDevices:
         if not device:
             return None
 
-        name = device.class_display_name or device.class_name
+        name = device.class_name
         return name
 
     def get_device_filename(self, device):
