@@ -5,6 +5,7 @@ import hashlib
 import re
 from Ubermap.UbermapLibs import log, log_call, config
 
+
 class UbermapDevices:
     PARAMS_PER_BANK = 8
     SECTION_BANKS = 'Banks'
@@ -24,21 +25,23 @@ class UbermapDevices:
         if not device:
             return None
 
-        name = device.class_name
+        name = device.class_display_name if hasattr(device, 'class_display_name') else device.class_name
         return name
 
     def get_device_filename(self, device):
         name = self.get_device_name(device)
         return config.get_path(name, 'Devices')
 
-    def dump_device(self, device, used_parameters = set()):
+    def dump_device(self, device, used_parameters=set()):
         if not device:
             return
 
         file_path = self.get_device_filename(device) + "_unmapped.txt"
-        unmapped_parameters = sorted([i.original_name for i in device.parameters[1:] if i.original_name not in used_parameters])
+        unmapped_parameters = sorted([i.original_name for i in device.parameters[1:]
+                                      if i.original_name not in used_parameters])
 
-        log.debug('dumping device: ' + self.get_device_name(device) + "; used parameters count: " + str(len(used_parameters)) + "; unmapped parameters count: " + str(len(unmapped_parameters)))
+        log.debug('dumping device: ' + self.get_device_name(device) + "; used parameters count: "
+                  + str(len(used_parameters)) + "; unmapped parameters count: " + str(len(unmapped_parameters)))
 
         if len(unmapped_parameters) > 0:
             with open(file_path, 'w+') as f:

@@ -1,3 +1,4 @@
+from Ubermap.configobj import ConfigObj
 import os
 
 LOG_ENABLED = True
@@ -11,7 +12,7 @@ class UbermapLogger:
         self.cfg = cfg
 
     def _get_log_file(self, name):
-        if(name in self._log_handles):
+        if name in self._log_handles:
             return self._log_handles[name]
 
         log_h = open(os.path.join(UBERMAP_ROOT, name + '.log'), 'w')
@@ -30,19 +31,18 @@ class UbermapLogger:
 
     def debug(self, msg, name = None):
         pass
-        # if self.cfg.get('Log', 'Debug') == 'True':
-        #     self.write('DEBUG: ' + msg, name)
+        if self.cfg.get('Log', 'Debug') == 'True':
+            self.write('DEBUG: ' + msg, name)
 
     def info(self, msg, name = None):
         pass
-        # if self.cfg.get('Log', 'Info') == 'True':
-        #     self.write('INFO: ' + msg, name)
+        if self.cfg.get('Log', 'Info') == 'True':
+            self.write('INFO: ' + msg, name)
 
     def error(self, msg, name = None):
         self.write('ERROR: ' + msg, name)
 
 
-from Ubermap.configobj import ConfigObj
 class UbermapConfig:
 
     _config_cache = {}
@@ -67,7 +67,7 @@ class UbermapConfig:
         if log_enabled:
             log.debug('looking for config in cache: ' + name + ', timestamp: ' + str(mtime))
 
-        if(name in self._config_cache and self._config_cache[name]['mtime'] == mtime):
+        if name in self._config_cache and self._config_cache[name]['mtime'] == mtime:
             if log_enabled:
                 log.debug('found config in cache: ' + name + ', timestamp: ' + str(mtime))
             config = self._config_cache[name]['config']
@@ -122,11 +122,12 @@ class UbermapConfigProxy:
     def get(self, *key):
         return self.config_provider.get(self.name, key, self.subdir, self.log_enabled)
 
+
 config = UbermapConfig()
 log = UbermapLogger(config.load('global', log_enabled = False))
 
+
 def log_call(msg):
-    return
     log = log.debug('CALL: ' + msg, 'main')
 
 
