@@ -5,7 +5,19 @@
 # Ubermap
 from Ubermap import UbermapDevices
 from Ubermap.UbermapLibs import log, config
+# BankingUtil
+from ableton.v2.control_surface import banking_util
+# DeviceParameterBank
+from ableton.v2.control_surface.device_parameter_bank import DeviceParameterBank
+# DeviceComponent
+from ableton.v2.control_surface.components import DeviceComponent
+from ableton.v2.control_surface.parameter_provider import ParameterInfo
+# DeviceParameterAdapter
+from ableton.v2.base import listenable_property
+from Push2.model.repr import DeviceParameterAdapter
+from math import floor
 import inspect
+
 
 def apply_ubermap_patches(is_v1):
     log.info("Applying UbermapDevices patches")
@@ -16,9 +28,11 @@ def apply_ubermap_patches(is_v1):
     apply_device_parameter_bank_patches()
     apply_device_parameter_adapater_patches()
 
+
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
 ubermap_config = config.load('global')
+
 
 def apply_log_method_patches():
     # Log any method calls made to the object - useful for tracing execution flow
@@ -31,19 +45,16 @@ def apply_log_method_patches():
 
 ############################################################################################################
 
-# BankingUtil
-from ableton.v2.control_surface import banking_util
 
 def apply_banking_util_patches():
     # device_bank_names - return Ubermap bank names if defined, otherwise use the default
     device_bank_names_orig = banking_util.device_bank_names
 
-    def device_bank_names(device, bank_size = 8, definitions = None):
+    def device_bank_names(device, bank_size=8, definitions=None):
         ubermap_banks = ubermap.get_custom_device_banks(device)
 
         if ubermap_banks:
             return ubermap_banks
-
 
         return device_bank_names_orig(device, bank_size, definitions)
 
@@ -52,7 +63,7 @@ def apply_banking_util_patches():
     # device_bank_count - return Ubermap bank count if defined, otherwise use the default
     device_bank_count_orig = banking_util.device_bank_count
 
-    def device_bank_count(device, bank_size = 8, definition = None, definitions = None):
+    def device_bank_count(device, bank_size=8, definition=None, definitions=None):
         ubermap_banks = ubermap.get_custom_device_banks(device)
         if ubermap_banks:
             return len(ubermap_banks)
@@ -63,8 +74,6 @@ def apply_banking_util_patches():
 
 ############################################################################################################
 
-# DeviceParameterBank
-from ableton.v2.control_surface.device_parameter_bank import DeviceParameterBank
 
 def apply_device_parameter_bank_patches():
     # _collect_parameters - this method is called by _update_parameters to determine whether we should
@@ -86,9 +95,6 @@ def apply_device_parameter_bank_patches():
 
 ############################################################################################################
 
-# DeviceComponent
-from ableton.v2.control_surface.components import DeviceComponent
-from ableton.v2.control_surface.parameter_provider import ParameterInfo
 
 def apply_device_component_patches(is_v1):
     # _get_provided_parameters - return Ubermap parameter names if defined, otherwise use the default
@@ -119,10 +125,6 @@ def apply_device_component_patches(is_v1):
 
 ############################################################################################################
 
-# DeviceParameterAdapter
-from ableton.v2.base import listenable_property
-from Push2.model.repr import DeviceParameterAdapter
-from math import floor
 
 def apply_device_parameter_adapater_patches():
     def name(self):
