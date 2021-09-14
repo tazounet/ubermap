@@ -108,7 +108,9 @@ def apply_device_component_patches(is_v1):
     def _get_parameter_info(self, parameter):
         if not parameter:
             return None
-        return ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter))
+        return ParameterInfo(parameter=parameter, name=parameter.custom_name,
+                             default_encoder_sensitivity=parameter_mapping_sensitivity(parameter),
+                             fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter))
 
     def _get_provided_parameters(self):
         ubermap_params = ubermap.get_custom_device_params(self._decorated_device)
