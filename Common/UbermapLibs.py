@@ -90,14 +90,9 @@ class UbermapConfig:
 
     def load_device_config(self, device_name):
         devices_folder = config.get_path('Devices')
-        device_config_files = [f for root, dirs, files in os.walk(devices_folder) for f in files if f.startswith(device_name) and f.endswith(".cfg")]
-        device_config_files.sort(key=lambda f: os.path.getmtime(os.path.join(devices_folder, f)))
-        device_config_files.reverse()
 
-        for file in device_config_files:
-            no_ext = file.replace(".cfg", "")
-            if no_ext.startswith(device_name):
-                return self.load(no_ext, 'Devices');
+        if os.path.exists(os.path.join(devices_folder, device_name + ".cfg")):
+            return self.load(os.path.join(devices_folder, device_name))
 
         return None
 
