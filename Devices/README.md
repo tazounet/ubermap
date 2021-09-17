@@ -12,7 +12,7 @@ Make sure you have a backup of anything important before starting, as I can't pr
 
 Note that ~ refers to your user folder (/Users/username).
 
-To install, download the ZIP file from Github (https://github.com/tomduncalf/ubermap/archive/master.zip) and unzip it somewhere. Open the unzipped folder in Finder, go in to the Devices folder, and double click "install.command". This should open up a Terminal window with some install messages, followed by "Ubermap installed - now restart Ableton Live". You can now close/quit the Terminal window.
+To install, download the ZIP file from Github (https://github.com/vokinpirks/ubermap/archive/refs/heads/master.zip) and unzip it somewhere. Open the unzipped folder in Finder, go in to the Devices folder, and double click "install.command". This should open up a Terminal window with some install messages, followed by "Ubermap installed - now restart Ableton Live". You can now close/quit the Terminal window.
 
 I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.6.2b1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
 
