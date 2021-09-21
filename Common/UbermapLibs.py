@@ -29,7 +29,7 @@ class UbermapLogger:
         self._get_log_file(name).write(msg + '\n')
         self._get_log_file(name).flush()
 
-    def debug(self, msg, name = None):
+    def debug(self, msg, name=None):
         pass
         if self.cfg.get('Log', 'Debug') == 'True':
             self.write('DEBUG: ' + msg, name)
@@ -47,7 +47,7 @@ class UbermapConfig:
 
     _config_cache = {}
 
-    def get_path(self, name, subdir1 = None):
+    def get_path(self, name, subdir1=None):
         if subdir1:
             path = os.path.join(UBERMAP_ROOT, subdir1, name)
         else:
@@ -55,7 +55,7 @@ class UbermapConfig:
 
         return path
 
-    def load(self, name, subdir = None, log_enabled = True):
+    def load(self, name, subdir=None, log_enabled=True):
         path = self.get_path(name, subdir1=subdir) + ".cfg"
 
         if not os.path.isfile(path):
@@ -119,7 +119,7 @@ class UbermapConfigProxy:
 
 
 config = UbermapConfig()
-log = UbermapLogger(config.load('global', log_enabled = False))
+log = UbermapLogger(config.load('global', log_enabled=False))
 
 
 def log_call(msg):

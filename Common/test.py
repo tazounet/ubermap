@@ -5,7 +5,7 @@ def main():
 
     cfg = config.load('global.cfg')
     while True:
-        print cfg.get('section', 'test_key')
+        print(cfg.get('section', 'test_key'))
         raw_input()
 
 if __name__ == "__main__":

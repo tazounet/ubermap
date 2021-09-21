@@ -32,6 +32,7 @@ def apply_ubermap_patches(is_v1):
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
 ubermap_config = config.load('global')
+original_banks_number = {}
 
 
 def apply_log_method_patches():
@@ -51,11 +52,15 @@ def apply_banking_util_patches():
     device_bank_names_orig = banking_util.device_bank_names
 
     def device_bank_names(device, bank_size=8, definitions=None):
-        ubermap_banks = ubermap.get_custom_device_banks(device)
+        device_name = str(ubermap.get_device_name(device))
+        log.debug("Patches.apply_banking_util_patches#device_bank_names: called for " + device_name)
+        ubermap_banks = ubermap.get_custom_device_banks(device, device_bank_names_orig(device, bank_size, definitions))
 
         if ubermap_banks:
+            log.debug("Patches.apply_banking_util_patches#device_bank_names: ubermap banks found for " + device_name)
             return ubermap_banks
 
+        log.debug("Patches.apply_banking_util_patches#device_bank_names: ubermap banks not found for " + device_name)
         return device_bank_names_orig(device, bank_size, definitions)
 
     banking_util.device_bank_names = device_bank_names
@@ -64,7 +69,10 @@ def apply_banking_util_patches():
     device_bank_count_orig = banking_util.device_bank_count
 
     def device_bank_count(device, bank_size=8, definition=None, definitions=None):
+        original_bank_count = device_bank_count_orig(device, bank_size, definition, definitions)
+
         ubermap_banks = ubermap.get_custom_device_banks(device)
+
         if ubermap_banks:
             return len(ubermap_banks)
 
