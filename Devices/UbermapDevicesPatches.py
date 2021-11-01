@@ -54,7 +54,7 @@ def apply_banking_util_patches():
     def device_bank_names(device, bank_size=8, definitions=None):
         device_name = str(ubermap.get_device_name(device))
         log.debug("Patches.apply_banking_util_patches#device_bank_names: called for " + device_name)
-        ubermap_banks = ubermap.get_custom_device_banks(device, device_bank_names_orig(device, bank_size, definitions))
+        ubermap_banks = ubermap.get_custom_device_banks(device)
 
         if ubermap_banks:
             log.debug("Patches.apply_banking_util_patches#device_bank_names: ubermap banks found for " + device_name)
@@ -69,8 +69,6 @@ def apply_banking_util_patches():
     device_bank_count_orig = banking_util.device_bank_count
 
     def device_bank_count(device, bank_size=8, definition=None, definitions=None):
-        original_bank_count = device_bank_count_orig(device, bank_size, definition, definitions)
-
         ubermap_banks = ubermap.get_custom_device_banks(device)
 
         if ubermap_banks:
