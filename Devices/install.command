@@ -79,6 +79,7 @@ check_error
 
 cp ../Common/configobj.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp ../Common/UbermapLibs.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
+cp ../Common/six.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp UbermapDevices.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp UbermapDevicesPatches.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp Push/__init__.py "$LIVE_MIDI_REMOTE_PATH/Push/"
