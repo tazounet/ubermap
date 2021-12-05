@@ -84,7 +84,7 @@ class UbermapDevices:
         if config_exists and self.cfg.get('Dump', 'new_devices') == 'True':
             self.dump_as_unmapped_properties(device, used_parameters)
         elif (not config_exists) and self.cfg.get('Dump', 'unmapped_parameters') == 'True':
-            self.dump_as_config(device)
+            self.dump_as_config(device, self.cfg.get('Dump', 'default_ignore') == 'True')
 
         log.info('dumped device: ' + self.get_device_name(device))
 
@@ -106,7 +106,7 @@ class UbermapDevices:
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
-    def dump_as_config(self, device):
+    def dump_as_config(self, device, ignore):
         filepath = self.get_device_filename(device, "Devices", "cfg")
         if self.get_device_config(device) or os.path.isfile(filepath):
             log.debug('not dumping device: ' + self.get_device_name(device))
@@ -122,7 +122,7 @@ class UbermapDevices:
 
         config[self.SECTION_CONFIG] = {}
         config[self.SECTION_CONFIG]['Cache'] = False
-        config[self.SECTION_CONFIG]['Ignore'] = True
+        config[self.SECTION_CONFIG]['Ignore'] = ignore
 
         count = 0
         bank = 1
