@@ -81,9 +81,9 @@ class UbermapDevices:
                   + ', dump new devices: ' + str(self.cfg.get('Dump', 'new_devices')) + ', dump unmapped: '
                   + str(self.cfg.get('Dump', 'unmapped_parameters')))
 
-        if config_exists and self.cfg.get('Dump', 'new_devices') == 'True':
+        if config_exists and self.cfg.get('Dump', 'unmapped_parameters') == 'True':
             self.dump_as_unmapped_properties(device, used_parameters)
-        elif (not config_exists) and self.cfg.get('Dump', 'unmapped_parameters') == 'True':
+        elif (not config_exists) and self.cfg.get('Dump', 'new_devices') == 'True':
             self.dump_as_config(device, self.cfg.get('Dump', 'default_ignore') == 'True')
 
         log.info('dumped device: ' + self.get_device_name(device))
