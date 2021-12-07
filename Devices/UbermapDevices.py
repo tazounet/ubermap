@@ -51,12 +51,23 @@ class UbermapDevices:
         if not device:
             return None
 
-        device_name = device.class_display_name \
-            if hasattr(device, 'class_display_name') \
-            else device.class_name
+        # ignore other device types for now
+        if not device.class_name == 'PluginDevice':
+            return None
 
-        if isinstance(device_name, type(None)):
-            log.debug(";".join(a for a in self.get_attributes(device)))
+        log.debug("class_display_name: " + (device.class_display_name or '')
+                 + ", class_name: " + (device.class_name or '') + ", name: " + (device.name or ''))
+
+        if hasattr(device, 'class_display_name'):
+            device_name = device.class_display_name
+        else:
+            device_name = device.class_name
+
+        if not device_name:
+            return None
+
+        # if isinstance(device_name, type(None)):
+        #     log.debug(";".join(a for a in self.get_attributes(device)))
 
         strict_matching_mode = self.cfg.get('Strict_matching', device_name)
         if strict_matching_mode == 'NAME':
@@ -77,6 +88,11 @@ class UbermapDevices:
         if not device:
             return
 
+        device_name = self.get_device_name(device)
+
+        if not device_name:
+            return
+
         log.debug('device: ' + self.get_device_name(device) + ', config exists: ' + str(config_exists)
                   + ', dump new devices: ' + str(self.cfg.get('Dump', 'new_devices')) + ', dump unmapped: '
                   + str(self.cfg.get('Dump', 'unmapped_parameters')))
@@ -86,7 +102,7 @@ class UbermapDevices:
         elif (not config_exists) and self.cfg.get('Dump', 'new_devices') == 'True':
             self.dump_as_config(device, self.cfg.get('Dump', 'default_ignore') == 'True')
 
-        log.info('dumped device: ' + self.get_device_name(device))
+        log.debug('dumped device: ' + self.get_device_name(device))
 
     def dump_as_unmapped_properties(self, device, used_parameters):
         os.makedirs(config.get_path('Unmapped'), exist_ok=True)
@@ -111,6 +127,7 @@ class UbermapDevices:
         if self.get_device_config(device) or os.path.isfile(filepath):
             log.debug('not dumping device: ' + self.get_device_name(device))
             return False
+
         log.debug('dumping device: ' + self.get_device_name(device))
 
         config = ConfigObj()
@@ -145,6 +162,8 @@ class UbermapDevices:
 
         if local_device_name is None or len(local_device_name) == 0:
             return False
+
+        log.debug("Device name is " + local_device_name)
 
         cfg = config.load_device_config(local_device_name)
 
