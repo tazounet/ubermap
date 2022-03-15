@@ -209,7 +209,7 @@ class UbermapDevices:
 
         def parse_custom_parameter_values(values):
             # Split the values on || to see if we have custom value start points specified
-            values_split = map(lambda s: s.split('||'), values)
+            values_split = [x.split("||") for x in values]
             has_value_start_points = all(len(x) == 2 for x in values_split)
             if not has_value_start_points:
                 return [values, None]
